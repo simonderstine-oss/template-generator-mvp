@@ -1,0 +1,15 @@
+--- UNIVERSAL TRACKING TAG ---
+
+Place the Universal Tracking Tag in the head section of each page of the site.  You can use this script tag on secure and non-secure pages.
+
+<script type="text/javascript">
+${utt}
+</script>
+
+--- IDENTIFY FUNCTION ---
+
+Place the Identify function in the body section of each page on the site.
+
+<script type="text/javascript">
+               ire('identify', {customerId: 'Customer Id', customerEmail: 'SHA1 Email Address', customProfileId: 'UUID'});
+</script>

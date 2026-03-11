@@ -1,0 +1,18 @@
+Technical Implementation Plan:
+Product	${product}
+Account	${accountName} (${accountId})
+Program	${viewName} (${viewId})
+
+Document History: 
+DATE - ${createDate}
+AUTHOR - ${techContact}
+NOTES - Document created
+
+***This implementation must be performed by a skilled technical resource with a web developer's background***
+
+
+
+
+
+
+
