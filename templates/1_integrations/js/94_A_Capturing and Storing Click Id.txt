@@ -1,0 +1,9 @@
+Capturing and Storing Click Id
+    Impact will dynamically populate a Click Id on Landing Page URLs resulting from clicks on Impact tracking links 
+    If the Click Id is present in the URL:
+    Capture the Click Id value and store it in a http or server-side cookie
+    The query string parameter name is im_ref
+    The Click Id value should be passed in the conversion payload
+    The JavaScript variable is clickid
+    The minimum cookie duration should match the referral window in your Template Terms
+    See the Help Center article Create Template Terms for more information

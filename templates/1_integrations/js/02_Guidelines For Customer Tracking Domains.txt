@@ -1,0 +1,14 @@
+--- GUIDELINES FOR CUSTOM TRACKING DOMAINS ---
+
+impact.com encourages brands to configure a custom tracking domain as part of tracking best practices.
+    This process involves implementing a first-party tracking domain, like goto.${firstSiteDefinition}, to improve tracking reliability and brand consistency. 
+    This option is only available to certain editions. If this feature is not included within your current edition, contact impact.com (using the steps provided above) to upgrade your account and gain access.
+A custom tracking domain accomplishes the following for your program:
+    Enhances trust and recognition by aligning your program’s tracking URL with your brand.
+        eg. goto.${firstSiteDefinition}
+    Reduces the risk of being blocked by ad blockers, which often target common third-party tracking domains.
+    A Custom Proxy Configuration improves cookie reliability for Safari by aligning the tracking domain with the site’s IP range.
+You can set up your own custom tracking domain for your program on impact.com within your account's technical settings. 
+    To accomplish this, you will need to configure, verify, and activate your custom tracking domain via the steps found within the following guide: Set Up a Custom Tracking Domain
+
+This implementation must be performed by a skilled technical resource with a web developer's background. As such, please consult with the relevant stakeholders of your technical team as well as your impact.com Implementation Engineer before pursuing this setup.

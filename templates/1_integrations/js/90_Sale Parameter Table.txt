@@ -1,0 +1,58 @@
+Conversion Event Parameters
+    Values in red should be set dynamically
+    For each item in the cart, add an element to the array
+    The example above includes 2 items
+        A SKU set subtotal is (quantity * price) excluding discounts, shipping, vat, gst, or other tax
+
+
+(Table with parameter, decription (data type, and notes columns))
+-------------------------------------------------------------------
+orderId: (required)
+Unique trackable ID for each event. (AlphaNumeric 64)
+
+customProfileId: (recommended)
+Unique identifier used to identify a visitor on your website (regardless of whether they're signed in). Common examples include UUIDs, anonymous user cookies, and IDFVs.  See the GUIDELINES FOR CUSTOM PROFILE IDS section above for more information.  (string 70)
+
+customerId: (recommended)
+Unique customer identifier your platform assigns to customer accounts. Do not use personally identifiable data for this field. Pass an empty string if unavailable. (String 255)
+
+customerEmail: (recommended)
+SHA1 hash of customer’s email. Pass an empty string if unavailable. (String 64)
+
+customerStatus: (recommended)
+Use values of “New” or “Existing”. This value can be used to alter payouts. (AlphaNumeric 40)
+
+currencycode: (recommended)
+ISO 4217 currency code (e.g. USD); impact.com will default to the currency configured in your account if no currencycode value is provided. (String 3)
+
+orderPromoCode: (recommended)
+Pass a single promo code (stacked promo codes are not supported).  Pass an empty string if unavailable. This value can be used to alter payouts. (String 64)
+
+orderDiscount: (required)
+The sum of all discounts applied to the conversion. This will be subtracted proportionally from the item-level subtotals when revenue values are calculated by Impact. (Decimal 8,2)
+
+subTotal: (required)
+SKU set subtotal (quantity*price) of the line item (excluding discounts, shipping, vat, gst, or other tax). (Decimal 8,2)
+
+category: (required)
+The item category identifier. This value can be used to alter payouts. (String 64)
+
+sku: (required)
+The item-specific identifier. (AlphaNumeric 40)
+
+quantity: (required)
+The quantity of the line item. (Integer)
+
+name: (optional)
+The name of the line item. (String 128)
+
+ - Additional parameters are available upon request
+
+
+Testing the trackConversion function
+To confirm the trackConversion function is invoked:
+    Turn on your browser developer tools
+    Place a test conversion
+    Look for your Event Id (${eventIds}) or tracking domain (${trackingDomain}) in the browser network tab of your browser developer tools
+    Confirm all payload parameters are correct
+

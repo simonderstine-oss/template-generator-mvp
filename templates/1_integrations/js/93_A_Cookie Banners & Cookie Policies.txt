@@ -1,0 +1,10 @@
+APPENDIX 1
+
+Cookie Banners & Cookie Policies
+If Impact’s script tags are executed after a cookie policy has been accepted, querystring parameters including the im_ref parameter must not be stripped from the URL until after consent has been given and the Universal Tracking Tag loads
+Capturing and storing of the Click Id value from the landing page URL is recommended for all EMEA implementations (see Capturing and Storing Click Id in Appendix 1 below) 
+Capturing and storing of the Click Id value from the landing page URL is required for any implementation if the user journey includes more than one top-level domain (see Capturing and Storing Click Id in Appendix 1 below)
+ If there is a domain or top-level domain transition, the Click Id should be passed to and stored against the new domain
+Click Id should be passed in the conversion payload
+
+If you believe any of the Cookie Banner & Cookie Policies elements apply to your implementation, please inform your Implementation Engineer as soon as possible using the guidelines in the How to Contact impact.com section above. 

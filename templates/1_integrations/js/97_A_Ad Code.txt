@@ -1,0 +1,4 @@
+Ad Code
+
+<a id="123456" href="https://brand.pxf.io/c/1234567/123456/12345" > [include text here (optional)]  </a><img height="0" width="0" src="https://imp.pxf.io/i/1234567/123456/12345" style="position:absolute;visibility:hidden;" border="0" />
+

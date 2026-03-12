@@ -1,0 +1,19 @@
+RESOURCES
+
+The following Impact solutions and resources are commonly leveraged by advertisers to complete or complement their implementation  
+Please log in to your Impact account and then follow the links below to explore how you can take advantage of these features
+
+Gateway Tracking Settings - The Gateway Tracking Settings page is where you can configure behavior for your impact.com tracking links, like your default landing page, tracking templates, SSL support, how partners can deep link to your website, and a couple of advanced options.
+
+Guide to Product Catalogs - A product catalog is a data feed that holds a list of your products and their metadata.  Many brands will create a product catalog through their e-commerce (or shopping cart) solution, which can be exported and shared with Impact.
+
+Reversals and Modifications -  You may wish to reverse or modify conversion events before they lock. For example, if an item is returned or if an order is canceled or fraudulent, you can reverse or modify the details of the order to adjust the payout to the Partner accordingly. Actions can be reversed through one of the following processes:
+Manually via the UI Pending Payouts screen
+Batch Process via FTP or Email
+Batch Process via API (Web Services):
+Reverse an Action
+Update/Reverse an Item within an Action
+
+Impact Brand API - Here you'll find comprehensive guides and documentation about how to use our brand API.
+
+Impact Help Center - How can we help you today?  Visit the impact.com Help Center to find help guides, FAQs, and other useful resources.

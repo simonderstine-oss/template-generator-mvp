@@ -1,0 +1,13 @@
+--- UNIVERSAL TRACKING TAG ---
+
+Place the Universal Tracking Tag in the head section of each page of the site.  You can use this script tag on secure and non-secure pages.
+--------------------------------
+<script type="text/javascript">
+${utt}
+</script>
+--------------------------------
+Testing the Universal Tracking Tag
+To confirm the Universal Tracking Tag is executing on all pages:
+    Search for utt.impactcdn.com in the developer tools network tab in your browser
+    Test on multiple pages
+    The recommended load time is under 3 seconds

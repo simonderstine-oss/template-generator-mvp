@@ -1,0 +1,33 @@
+Conversion Event Parameters
+    Values in red should be set dynamically
+
+
+(Table with parameter, decription (data type, and notes columns))
+-------------------------------------------------------------------
+actionTrackerId: (required)
+Value specific to each conversion event; use ${useEventIdForName} 
+
+orderId: (required)
+Unique trackable ID for each event. (AlphaNumeric 64)
+
+customProfileId: (recommended)
+Unique identifier used to identify a visitor on your website (regardless of whether they're signed in). Common examples include UUIDs, anonymous user cookies, and IDFVs.  See the GUIDELINES FOR CUSTOM PROFILE IDS section above for more information.  (string 70)
+
+customerId: (recommended)
+Unique customer identifier your platform assigns to customer accounts. Do not use personally identifiable data for this field. Pass an empty string if unavailable. (String 255)
+
+customerEmail: (recommended)
+SHA1 hash of customer’s email. Pass an empty string if unavailable. (String 64)
+
+- Additional parameters are available upon request
+
+Testing the trackConversion function
+To confirm the trackConversion function is invoked:
+    Turn on your browser developer tools
+    Place a test conversion
+    Look for your Event Id (${eventIds}) or tracking domain (${trackingDomain}) in the browser network tab of your browser developer tools
+    Confirm all payload parameters are correct
+
+
+
+

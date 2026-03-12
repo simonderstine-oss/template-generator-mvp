@@ -1,0 +1,52 @@
+END TO END TESTING AND EVENT VALIDATION
+
+Once you have confirmed the Universal Tracking Tag, Identify function, and trackConversion function using the test processes (in orange) above, it is necessary to perform a final end-to-end test in your production environment in order to validate each conversion event.
+
+
+Generating a test tracking link
+    Log in to your impact.com user account
+    Navigate to Engage (left-hand nav) > Transactions > Test Actions
+    Click the "Start New Test" button in the upper-right corner
+    Select a Template Term; using Public Terms is the most common selection
+    Select an Ad; using the Online Tracking Link is the most common selection
+    If desired, add a Shared ID value
+    If you need to test a custom landing page, toggle the selector to "On" and input your desired landing page
+        If you provide a custom landing page, be sure the provided destination is permitted for Deep Linking in your program settings
+    Click the "Generate test link" button
+    Copy the test tracking link
+Executing the end-to-end conversion test
+    Clear cache and cookies (before each test) and be sure ad-blocking browser extensions are disabled
+    You may also conduct your test in your browser's private mode, incognito mode, or guest mode:
+    Chrome Guest Mode
+    Chrome Incognito mode
+    Edge Guest Mode
+    Edge Private Mode (go to File > New InPrivate Window)
+    Firefox Guest Mode
+    Firefox Private Mode (go to File > New Private Window)
+    Safari Private Window (go to File > New Private Window)
+    Copy & paste the test tracking link in your web browser; the link will direct you to your website
+    Record the im_ref value from the URL 
+    Complete a conversion event on your website and record the Order ID and payload parameters
+    Recommendations for Sale transactions: complete several tests with multiple SKUs, a minimum quantity of 2 for each SKU, and some tests with a promo code & discount and some without a promo code and discount 
+    Recommendations for Lead transactions: complete several transactions to test variations in payload parameters such as promo codes, note, or text fields, etc that are relevant to your expected payout conditions
+Validating the end-to-end conversion test
+    Log in to your impact.com user account
+    Navigate to Engage (left-hand nav) > Transactions > Test Actions
+    Find your test conversion(s) based on the Order Id you recorded above
+    Hover over the transaction row to reveal the three-dot menu on the right
+    Click the three-dot menu and select "See Details"
+    Review the conversion payload details paying attention to revenue, discounts, product details, and any other element that will potentially affect partner payouts
+    If all the details are as expected, click the "Approve" button
+    If any detail is not correct, click the "Reject" button
+
+
+
+It may take up to 30 minutes for a test transaction to surface on the Test Actions screen
+If your test transaction does not appear on the test transaction screen, contact your Implementation Engineer using the process in "How to contact Impact.com" section of this document
+If you reject the end-to-end test result, you will need correct the integration and repeat the end-to-end process for that conversion event until you achieve a successful result
+
+
+24 hours after the solution is in production: 
+    pull a log file from your backend/eCommerce engine that includes the date, time, time zone, order id, and conversion revenue amount 
+    Please include all revenue-related metrics like tax, shipping, discounts, subtotals, etc
+    Send the data to your Implementation Engineer for data validation via the Tech Thread

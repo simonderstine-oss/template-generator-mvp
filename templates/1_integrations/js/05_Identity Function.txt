@@ -1,0 +1,38 @@
+--- IDENTIFY FUNCTION ---
+
+Place the Identify function in the body section of each page on the site.
+
+The Identify function is required to be invoked on all pages.  
+    This function is responsible for creating the referral event within impact.com
+    When the customerId and customerEmail values are unknown, pass an empty string value for each variable and not a default or placeholder value such as undefined or null
+
+--------------------------------
+<script type="text/javascript">
+               ire('identify', {customerId: 'Customer Id', customerEmail: 'SHA1 Email Address', customProfileId: 'UUID'});
+</script>
+--------------------------------
+
+Values shown in red should be set dynamically:
+    customerId: pass the Customer Id or an empty string
+    customerEmail: pass a SHA1 hash of the customer's email address or an empty string
+    customProfileId: pass a Unique identifier used to identify a visitor on your website (regardless of whether they're signed in). Common examples include UUIDs, anonymous user cookies, and IDFVs.  See the GUIDELINES FOR CUSTOM PROFILE IDS section above for more information.
+
+Testing the Identify function
+
+To confirm the Identity function is invoked on all pages:
+    Clear cache and cookies in your browser
+    Open developer tools
+    For each website address in scope (${siteDefinition}), append “?im_ref=1234567”, and hit enter
+    In the network tab of your browser developer tools, locate the request containing `/xur/` or `/cur/` or `/ur/` and your Program ID(${viewId})
+    Repeat for multiple pages of your site
+
+To confirm you are passing a CustomProfileId, Customer Id and/or Customer Email (where applicable) properly:
+    test both “logged in” and anonymous scenarios
+    locate the request containing `/xur/` or `/cur/` or `/ur/` and your Program ID(${viewId}) in the network tab in your browser developer tools and click to highlight it in the Name column
+    Then, review the Request Payload section under the Headers sub-tab 
+    When anonymous
+        Confirm the Customer id (custid) and Customer Email (custemail) parameters are empty strings when the user is anonymous
+        Confirm the CustomProfileId (customprofileid) is present
+    When logged in
+        Confirm the CustomProfileId (customprofileid), Customer id (custid) and Customer Email (custemail) parameters are present for “logged in” users
+        Confirm the value of the Customer Email is a SHA1 hashed value
