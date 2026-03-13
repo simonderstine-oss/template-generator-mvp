@@ -1,0 +1,20 @@
+REPORTING CONVERSION EVENTS VIA CONVERSIONS API
+
+To access your API credentials:
+    Log in to your impact.com - The All-in-One Partnership Management Platform  user account
+    Navigate to the three-dot menu in the lower-left corner of the user interface
+    Select an existing tile from the list of API credentials, or create a new set of credentials via the “Create Access Token” button at the top right of the page.
+    For creating a new access token: After completing the “Setup” and “Contact Information” portions, we recommend the following configurations in the “API Scopes” section: 
+        Actions (Toggle ON), check all nested boxes
+        Conversions (Toggle ON), check all nested boxes
+        Submissions (Toggle ON), check all nested boxes
+        Hit “Create” to save 
+    Select the newly created tile with your new access token, and copy Account SID and Auth token under the “API Credentials” section. 
+    You will need to insert the ACCOUNT_SID into the POST where indicated below
+    Authentication to the API is performed via HTTP Basic Auth
+    Provide your Account SID as the basic auth username and your Auth Token as the basic auth password
+    Make a POST request to the conversions API each time a conversion event occurs
+
+API Endpoint:
+POST https://api.impact.com/Advertisers/ACCOUNT_SID/Conversions
+

@@ -1,0 +1,27 @@
+How to Execute an End to End test with a Test Partner
+Additional test recommendations are included in End To End Testing and Event Validation
+
+Clear cache and cookies (before each test) and be sure ad-blocking browser extensions are disabled 
+Copy & paste the test tracking link in your web browser; the link will direct you to your website
+Record the im_ref value from the URL 
+Complete a conversion event on your website, backend, crm solution, or equivalent, and record the Order ID and payload parameters
+For each test, send the im_ref value, order id, and payload parameters to Impact for verification
+Log into your Advertiser account and review the pending conversion event/s here: Transactions > Pending Payouts> Actions (allow ~20mins)
+After all tests are complete, reverse all test conversion events before they lock
+
+To alter the destination URL of the Test Tracking Link:
+If your tracking link is https://program.sjv.io/c/1234567/1234567/12345
+Add a "u" parameter to the tracking link
+Add an encoded version of your desired landing page URL as the value of the "u" parameter
+For example
+https://www.somelandingpage.com 
+will become
+https%3A%2F%2Fwww.somelandingpage.com
+Your final test tracking link will be:
+https://program.sjv.io/c/1234567/1234567/12345?u=https%3A%2F%2Fwww.somelandingpage.com
+
+
+The above process can be used to complete end-to-end tests in staging / development and production environments
+If you alter the destination URL, be sure the new destination is permitted for Deep Linking in your program settings
+
+

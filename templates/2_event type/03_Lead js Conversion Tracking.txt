@@ -1,0 +1,12 @@
+<script type="text/javascript">
+ire('trackConversion', actionTrackerId, {
+     orderId: "Order Id here",
+     customProfileId: "UUID here",
+     customerId: "Customer Id here",
+     customerEmail: "SHA1 Hash of Customer’s Email",
+               },
+          {
+          verifySiteDefinitionMatch:true
+          }
+          );
+</script>

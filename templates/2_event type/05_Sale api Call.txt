@@ -1,0 +1,33 @@
+API Call Example:
+
+POST /Advertisers/ACCOUNT_SID/Conversions HTTP/1.1
+Authorization: Basic a1BcDEFgHIjklMn2oPQrs3tuvwX4
+Host: api.impact.com
+Accept: application/json
+Content-Type: application/json
+Content-Length: 111
+
+{
+  "CampaignId": ${viewId},
+  "ActionTrackerId": ${eventId},
+  "EventDate": "dd-MMM-yyyy HH:mm:ss z",
+  "IpAddress": "ipaddress",
+  "ClickId": "clickid123",
+  "OrderId": "OID-123",
+  "CustomerId": 657584,
+  "CustomerEmail": "3be1c5898e7d600b2765f964e27cf0af531c4970",
+  "CustomerStatus": "NEW",
+  "OrderDiscount": 15.00,
+  "OrderPromoCode": "PROMO-123",
+  "CurrencyCode": "USD",
+  "ItemCategory1": "Product Category 1",
+  "ItemSku1": "sku-11111",
+  "ItemSubTotal1": 28.00,
+  "ItemQuantity1": 2,
+  "ItemName1": "Product Name 1",
+  "ItemCategory2": "Product Category 2",
+  "ItemSku2": "sku-22222",
+  "ItemSubTotal2": 99,
+  "ItemQuantity2": 3,
+  "ItemName2": "Product Name 2"  
+}

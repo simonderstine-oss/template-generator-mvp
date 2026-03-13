@@ -1,4 +1,4 @@
---- UNIVERSAL TRACKING TAG ---
+UNIVERSAL TRACKING TAG
 
 Place the Universal Tracking Tag in the head section of each page of the site.  You can use this script tag on secure and non-secure pages.
 --------------------------------

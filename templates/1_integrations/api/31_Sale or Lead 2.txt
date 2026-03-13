@@ -1,8 +1,8 @@
-OVERVIEW:
+OVERVIEW
 
 ${accountName} to report ${eventName} events on ${siteDefinition} via the impact.com Conversions API.
 
-EVENT NAME = ${eventName}
-EVENT ID = ${eventId}
+EVENT NAMES (Event IDS) = ${multiEventTypesNameAndId}
 METHOD = Conversions API
 SITE DEFINITION = ${siteDefinition}
+

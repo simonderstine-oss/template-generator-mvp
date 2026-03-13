@@ -1,4 +1,4 @@
---- GUIDELINES FOR CUSTOM PROFILE IDS ---
+GUIDELINES FOR CUSTOM PROFILE IDS
 
 Passing a CustomProfileId is recommended for the identify and trackConversion functions included in this document
 To generate an effective CustomProfileId, ideally a UUID, please adhere to the following recommendations:

@@ -1,0 +1,15 @@
+Technical Implementation Plan:
+Product	${product}
+Account	${accountName} (${accountId})
+Program	${viewName} (${viewId})
+
+***This implementation must be performed by a skilled technical resource with a web developer's background***
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
----OVERVIEW---
+OVERVIEW
 
 ${accountName} to implement impact.com's Universal Tracking Tag, Identify function, and trackConversion function for tracking ${andEventNames} events on ${siteDefinition}.  
 The scripts can be deployed via a tag manager or placed directly on the site.
@@ -8,7 +8,7 @@ METHOD = Javascript
 SITE DEFINITION = ${siteDefinition}
 
 
---- CONVERSION TRACKING ---
+CONVERSION TRACKING
 
 ${multiEventTypesNameAndId}
 
@@ -16,16 +16,5 @@ Place the trackConversion function below in the body of the confirmation page to
 This tag requires the Universal Tracking Tag to be loaded for all transactions.
 
 
-<script type="text/javascript">
-ire('trackConversion', actionTrackerId, {
-     orderId: "Order Id here",
-     customProfileId: "UUID here",
-     customerId: "Customer Id here",
-     customerEmail: "SHA1 Hash of Customer’s Email",
-               },
-          {
-          verifySiteDefinitionMatch:true
-          }
-          );
-</script>
+<02_Lead js Conversion Tracking>
 

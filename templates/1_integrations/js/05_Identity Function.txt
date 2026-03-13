@@ -1,4 +1,4 @@
---- IDENTIFY FUNCTION ---
+IDENTIFY FUNCTION
 
 Place the Identify function in the body section of each page on the site.
 

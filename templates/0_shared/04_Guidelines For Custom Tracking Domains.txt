@@ -1,4 +1,4 @@
---- GUIDELINES FOR CUSTOM TRACKING DOMAINS ---
+GUIDELINES FOR CUSTOM TRACKING DOMAINS
 
 impact.com encourages brands to configure a custom tracking domain as part of tracking best practices.
     This process involves implementing a first-party tracking domain, like goto.${firstSiteDefinition}, to improve tracking reliability and brand consistency. 

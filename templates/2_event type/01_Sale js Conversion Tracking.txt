@@ -1,0 +1,33 @@
+<script type="text/javascript">
+ire('trackConversion', ${eventId}, {
+     orderId: "Order Id here",
+     customProfileId: "UUID here",
+     customerId: "Customer Id here",
+     customerEmail: "SHA1 Hash of Customer’s Email",
+     customerStatus: "Customer Status here",
+     currencyCode: "USD",
+     orderPromoCode: "Promo Code here",
+     orderDiscount: 15.00,
+     items: [
+               {
+		   subTotal: 28.00,
+		   category: "Product Category 1",
+		   sku: "sku-11111",
+		   quantity: 2,
+               name: "Product Name 1"
+               },
+               {
+		   subTotal: 99.00,
+		   category: "Product Category 2",
+		   sku: "sku-22222",
+		   quantity: 3,
+               name: "Product Name 2"
+	         }
+            ]
+          },
+          {
+          verifySiteDefinitionMatch:true
+          }
+          );
+</script>
+
