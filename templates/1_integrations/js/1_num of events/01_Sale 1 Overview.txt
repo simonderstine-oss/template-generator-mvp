@@ -1,0 +1,9 @@
+OVERVIEW
+
+${accountName} to implement impact.com's Universal Tracking Tag, Identify function, and trackConversion function for tracking ${eventName} events on ${siteDefinition}.  
+The scripts can be deployed via a tag manager or placed directly on the site.
+
+EVENT NAME = ${eventName}
+EVENT ID = ${eventId}
+METHOD = Javascript
+SITE DEFINITION = ${siteDefinition}

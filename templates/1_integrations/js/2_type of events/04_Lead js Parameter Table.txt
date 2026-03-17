@@ -1,7 +1,3 @@
-Conversion Event Parameters
-    Values in red should be set dynamically
-
-
 (Table with parameter, decription (data type, and notes columns))
 -------------------------------------------------------------------
 actionTrackerId: (required)

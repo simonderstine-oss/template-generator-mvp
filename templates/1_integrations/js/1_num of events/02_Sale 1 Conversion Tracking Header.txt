@@ -1,0 +1,6 @@
+CONVERSION TRACKING
+
+${eventName} (${eventId})
+
+Place the trackConversion function below in the body of the confirmation page to be invoked immediately after a successful ${eventName} event.  
+This tag requires the Universal Tracking Tag to be loaded for all transactions.

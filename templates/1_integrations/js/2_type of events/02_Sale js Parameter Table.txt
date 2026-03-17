@@ -1,10 +1,3 @@
-Conversion Event Parameters
-    Values in red should be set dynamically
-    For each item in the cart, add an element to the array
-    The example above includes 2 items
-        A SKU set subtotal is (quantity * price) excluding discounts, shipping, vat, gst, or other tax
-
-
 (Table with parameter, decription (data type, and notes columns))
 -------------------------------------------------------------------
 orderId: (required)

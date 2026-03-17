@@ -10,3 +10,6 @@ ire('trackConversion', actionTrackerId, {
           }
           );
 </script>
+
+Conversion Event Parameters
+     Values in red should be set dynamically
