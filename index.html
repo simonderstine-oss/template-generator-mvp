@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Template Tech Plan Generator</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 2rem;
+      background: #f4f5f7;
+      color: #1f2933;
+    }
+    h1 {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+    }
+    .layout {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+      max-width: 640px;
+    }
+    .field {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    select {
+      width: 100%;
+      padding: 0.4rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #cbd2d9;
+      font-size: 0.95rem;
+      background: #fff;
+    }
+    button {
+      margin-top: 0.5rem;
+      padding: 0.5rem 0.9rem;
+      border-radius: 4px;
+      border: none;
+      background: #2563eb;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    #outputContainer {
+      flex: 1;
+      max-height: 80vh;
+      overflow: auto;
+    }
+    .chunk {
+      background: #111827;
+      color: #e5e7eb;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      white-space: pre-wrap;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.85rem;
+    }
+    .chunk-header {
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+      color: #a5b4fc;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <div class="card">
+      <h1>Tech Plan Generator</h1>
+      <div class="field">
+        <label for="integrationType">Integration type</label>
+        <select id="integrationType">
+          <option value="js">JS</option>
+          <option value="api">API</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="eventType">Event type</label>
+        <select id="eventType">
+          <option value="sale">Sale</option>
+          <option value="lead">Lead</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="eventCount">Number of events</label>
+        <select id="eventCount">
+          <option value="1">1</option>
+          <option value="2plus">2+</option>
+        </select>
+      </div>
+      <button id="generateBtn" type="button">Generate Tech Plan</button>
+      <p style="margin-top:0.75rem;font-size:0.8rem;color:#6b7280;">
+        Generated tech plan appears to the right. Reloading the page clears the output.
+      </p>
+    </div>
+
+    <div id="outputContainer"></div>
+  </div>
+
+  <script>
+    // Static mapping of template files based on current directory structure.
+    // All plans always include these shared files (in order).
+    const SHARED_FILES = [
+      "templates/0_shared/01_Brand Header.txt",
+      "templates/0_shared/02_Document History.txt",
+      "templates/0_shared/03_How to Contact impact.com.txt",
+      "templates/0_shared/04_Guidelines For Custom Tracking Domains.txt",
+      "templates/0_shared/05_End To End Testing And Event Validation.txt",
+      "templates/0_shared/06_Resources.txt"
+    ];
+
+    // Base integration-specific modules (always included for the chosen integration)
+    const INTEGRATION_BASE = {
+      js: [
+        "templates/1_integrations/js/01_Technical Requirements.txt",
+        "templates/1_integrations/js/03_Guidelines For Custom Profile IDs.txt",
+        "templates/1_integrations/js/04_Universal Tracking Tag.txt",
+        "templates/1_integrations/js/05_Identity Function.txt",
+        "templates/1_integrations/js/93_A_Cookie Banners & Cookie Policies.txt",
+        "templates/1_integrations/js/94_A_Capturing and Storing Click Id.txt",
+        "templates/1_integrations/js/95_A_Creating a Test Partner Account.txt",
+        "templates/1_integrations/js/96_A_How to Access a Test Tracking Link.txt",
+        "templates/1_integrations/js/97_A_Ad Code.txt",
+        "templates/1_integrations/js/98_A_How to Execute an End to End Test with Test Partner.txt"
+      ],
+      api: [
+        "templates/1_integrations/api/01_Technical Requirements.txt",
+        "templates/1_integrations/api/03_Capturing and Storing ClickID.txt",
+        "templates/1_integrations/api/04_Reporting Conversion Events via Conversions API.txt",
+        "templates/1_integrations/api/90_A_Creating a Test Partner Account.txt",
+        "templates/1_integrations/api/91_A_How to Access a Test Tracking Link.txt",
+        "templates/1_integrations/api/92_A_Ad Code.txt",
+        "templates/1_integrations/api/93_A_How to Execute an End to End Test with a Test Partner.txt"
+      ]
+    };
+
+    // Event-type-specific modules by integration & number of events.
+    function getEventTypeFiles(integrationType, eventType, eventCount) {
+      const files = [];
+
+      if (integrationType === "js") {
+        // JS integration
+        if (eventType === "sale") {
+          // sale JS conversion & params
+          files.push("templates/2_event type/01_Sale js Conversion Tracking.txt");
+          files.push("templates/2_event type/02_Sale js Parameter Table.txt");
+          // number-of-events-specific
+          if (eventCount === "1") {
+            files.push("templates/1_integrations/js/30_Sale 1.txt");
+          } else {
+            files.push("templates/1_integrations/js/31_Sale 2.txt");
+          }
+        } else if (eventType === "lead") {
+          files.push("templates/2_event type/03_Lead js Conversion Tracking.txt");
+          files.push("templates/2_event type/04_Lead js Parameter Table.txt");
+          // For lead, the same module is used for 1 or 2+ events
+          files.push("templates/1_integrations/js/32_Lead 1 or 2.txt");
+        }
+      } else if (integrationType === "api") {
+        // API integration
+        if (eventType === "sale") {
+          if (eventCount === "1") {
+            files.push("templates/1_integrations/api/30_Sale or Lead 1.txt");
+          } else {
+            files.push("templates/1_integrations/api/31_Sale or Lead 2.txt");
+          }
+          // Sale API parameter + call
+          files.push("templates/2_event type/05_Sale api Call.txt");
+          files.push("templates/2_event type/06_Sale api Parameter Table.txt");
+        } else if (eventType === "lead") {
+          if (eventCount === "1") {
+            files.push("templates/1_integrations/api/30_Sale or Lead 1.txt");
+          } else {
+            files.push("templates/1_integrations/api/31_Sale or Lead 2.txt");
+          }
+          files.push("templates/2_event type/07_Lead api Call.txt");
+        }
+      }
+
+      return files;
+    }
+
+    async function fetchTextFile(path) {
+      const resp = await fetch(path);
+      if (!resp.ok) {
+        return { path, content: `Error loading file (${resp.status})` };
+      }
+      const text = await resp.text();
+      return { path, content: text };
+    }
+
+    async function generatePlan() {
+      const integrationType = document.getElementById("integrationType").value;
+      const eventType = document.getElementById("eventType").value;
+      const eventCount = document.getElementById("eventCount").value;
+
+      const outputContainer = document.getElementById("outputContainer");
+      outputContainer.innerHTML = "";
+
+      const filesToLoad = [
+        ...SHARED_FILES,
+        ...INTEGRATION_BASE[integrationType],
+        ...getEventTypeFiles(integrationType, eventType, eventCount)
+      ];
+
+      const results = await Promise.all(filesToLoad.map(fetchTextFile));
+
+      results.forEach(({ path, content }) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "chunk";
+
+        const header = document.createElement("div");
+        header.className = "chunk-header";
+        header.textContent = path;
+
+        const body = document.createElement("div");
+        body.textContent = content;
+
+        wrapper.appendChild(header);
+        wrapper.appendChild(body);
+        outputContainer.appendChild(wrapper);
+      });
+    }
+
+    document.getElementById("generateBtn").addEventListener("click", () => {
+      generatePlan();
+    });
+  </script>
+</body>
+</html>

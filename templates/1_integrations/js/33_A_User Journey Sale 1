@@ -1,0 +1,9 @@
+User Journey 
+    A user visits ${siteDefinition} from an Impact tracking link
+        Impact will dynamically populate a Click Id value in a landing page URL parameter called im_ref
+            e.g. https://${firstSiteDefinition}?im_ref=14zqjADgl7uNcN9V8uPPgD3Cj:oube4Osd-nEHg-PBfM
+        ${accountName} loads Impact’s Universal Tracking Tag in the head followed by the Identify function in the body
+    User navigates around ${firstSiteDefinition}
+        ${accountName} loads Impact’s Universal Tracking Tag in the head followed by the Identify function in the body on every page of the site
+    User completes a/an ${eventName} event
+        ${accountName} loads Impact’s Universal Tracking Tag in the head followed by the trackCoversion function in the body

@@ -17,4 +17,3 @@ Place the trackConversion function below in the body of the confirmation page to
 This tag requires the Universal Tracking Tag to be loaded for all transactions.
 
 
-<01_Sale js Conversion Tracking>
