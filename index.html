@@ -127,13 +127,13 @@
     const INTEGRATION_BASE = {
       // JS ordering is handled by getJsFiles()
       api: [
-        "templates/1_integrations/api/01_Technical Requirements.txt",
-        "templates/1_integrations/api/03_Capturing and Storing ClickID.txt",
-        "templates/1_integrations/api/04_Reporting Conversion Events via Conversions API.txt",
-        "templates/1_integrations/api/90_A_Creating a Test Partner Account.txt",
-        "templates/1_integrations/api/91_A_How to Access a Test Tracking Link.txt",
-        "templates/1_integrations/api/92_A_Ad Code.txt",
-        "templates/1_integrations/api/93_A_How to Execute an End to End Test with a Test Partner.txt"
+        "templates/1_integrations/api/3_shared api/01_Technical Requirements.txt",
+        "templates/1_integrations/api/3_shared api/03_Capturing and Storing ClickID.txt",
+        "templates/1_integrations/api/3_shared api/04_Reporting Conversion Events via Conversions API.txt",
+        "templates/1_integrations/api/3_shared api/90_A_Creating a Test Partner Account.txt",
+        "templates/1_integrations/api/3_shared api/91_A_How to Access a Test Tracking Link.txt",
+        "templates/1_integrations/api/3_shared api/92_A_Ad Code.txt",
+        "templates/1_integrations/api/3_shared api/93_A_How to Execute an End to End Test with a Test Partner.txt"
       ]
     };
 
@@ -261,20 +261,21 @@
         // API integration
         if (eventType === "sale") {
           if (eventCount === "1") {
-            files.push("templates/1_integrations/api/30_Sale or Lead 1.txt");
+            files.push("templates/1_integrations/api/1_num of events/01_Sale or Lead Overview 1.txt");
           } else {
-            files.push("templates/1_integrations/api/31_Sale or Lead 2.txt");
+            files.push("templates/1_integrations/api/1_num of events/02_Sale or Lead Overview 2.txt");
           }
           // Sale API parameter + call
-          files.push("templates/2_event type/05_Sale api Call.txt");
-          files.push("templates/2_event type/06_Sale api Parameter Table.txt");
+          files.push("templates/1_integrations/api/2_type of events/01_Sale api Call.txt");
+          files.push("templates/1_integrations/api/2_type of events/02_Sale api Parameter Table.txt");
         } else if (eventType === "lead") {
           if (eventCount === "1") {
-            files.push("templates/1_integrations/api/30_Sale or Lead 1.txt");
+            files.push("templates/1_integrations/api/1_num of events/01_Sale or Lead Overview 1.txt");
           } else {
-            files.push("templates/1_integrations/api/31_Sale or Lead 2.txt");
+            files.push("templates/1_integrations/api/1_num of events/02_Sale or Lead Overview 2.txt");
           }
-          files.push("templates/2_event type/07_Lead api Call.txt");
+          files.push("templates/1_integrations/api/2_type of events/03_Lead api Call.txt");
+          files.push("templates/1_integrations/api/2_type of events/04_Lead api Parameter Table.txt");
         }
       }
 
