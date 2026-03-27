@@ -1,0 +1,18 @@
+{
+    "sale_api_1": [
+      "shared.brandHeader",
+      "shared.documentHistory",
+      "integrations.api.num_of_events.overview_1_event",
+      "integrations.api.type_of_events.sale_call",
+      "integrations.api.type_of_events.sale_param_table",
+      "integrations.api.shared_api.tech_reqs",
+      "integrations.api.shared_api.capturing_clickid",
+      "shared.endToEndTesting",
+      "shared.resources",
+      "integrations.api.shared_api.appendix_create_test_partner",
+      "integrations.api.shared_api.appendix_access_test_link",
+      "integrations.api.shared_api.appendix_ad_code",
+      "integrations.api.shared_api.appendix_execute_e2e_test"
+    ]
+  }
+  
