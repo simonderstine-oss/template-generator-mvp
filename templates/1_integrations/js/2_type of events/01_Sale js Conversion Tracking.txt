@@ -36,5 +36,3 @@ Conversion Event Parameters
   For each item in the cart, add an element to the array
   The example above includes 2 items
     A SKU set subtotal is (quantity * price) excluding discounts, shipping, vat, gst, or other tax
-
-

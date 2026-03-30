@@ -27,18 +27,3 @@ Production
     Complete conversion event validation for any/all conversion events
 
 Please refer to Appendix 1 at the end of this document for additional technical requirements that may be relevant to your implementation. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

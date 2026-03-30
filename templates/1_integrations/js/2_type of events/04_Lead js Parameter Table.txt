@@ -23,7 +23,3 @@ To confirm the trackConversion function is invoked:
     Place a test conversion
     Look for your Event Id (${eventIds}) or tracking domain (${trackingDomain}) in the browser network tab of your browser developer tools
     Confirm all payload parameters are correct
-
-
-
-

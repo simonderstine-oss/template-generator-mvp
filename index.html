@@ -62,21 +62,52 @@
       flex: 1;
       max-height: 80vh;
       overflow: auto;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 1.25rem;
     }
     .chunk {
-      background: #111827;
-      color: #e5e7eb;
-      padding: 0.75rem 1rem;
+      background: transparent;
+      color: #111827;
+      padding: 0;
       border-radius: 6px;
-      margin-bottom: 1rem;
-      white-space: pre-wrap;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
     }
     .chunk-header {
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: #7f1d1d;
+      font-size: 0.8rem;
+    }
+    .doc-body {
+      font-size: 0.95rem;
+      line-height: 1.45;
+      color: #111827;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .doc-gap {
+      height: 10px;
+    }
+    .doc-bold-line {
       font-weight: 700;
-      margin-bottom: 0.35rem;
-      color: #a5b4fc;
+      margin: 0.6rem 0 0.35rem;
+    }
+    .doc-paragraph {
+      margin: 0.15rem 0;
+    }
+    .doc-bullets {
+      margin: 0.25rem 0 0.75rem 1.25rem;
+      padding-left: 1rem;
+    }
+    .doc-bullets li {
+      margin: 0.1rem 0;
+    }
+    .doc-code {
+      white-space: pre-wrap;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      line-height: 1.35;
+      font-size: 0.9rem;
     }
     .hint {
       margin-top: 0.75rem;
@@ -372,6 +403,82 @@
       return { path, content: text };
     }
 
+    function isAllCapsHeader(trimmedLine) {
+      // Heuristic: bold lines like "TECHNICAL REQUIREMENTS", "HOW TO CONTACT IMPACT.COM".
+      if (trimmedLine.length < 2 || trimmedLine.length > 90) return false;
+      if (!/[A-Z]/.test(trimmedLine)) return false;
+      return trimmedLine === trimmedLine.toUpperCase();
+    }
+
+    function isLikelySectionHeader(trimmedLine) {
+      if (isAllCapsHeader(trimmedLine)) return true;
+      // Also treat short "X:" lines as headers (common in your templates).
+      if (trimmedLine.endsWith(":") && trimmedLine.length <= 70) return true;
+      return false;
+    }
+
+    function leadingSpaceCount(line) {
+      const match = line.match(/^(\s*)/);
+      if (!match) return 0;
+      // Treat tab as 2 spaces for consistent indentation detection.
+      return match[1].replace(/\t/g, "  ").length;
+    }
+
+    function renderDocTextInto(container, text, opts = {}) {
+      const allowIndentedBullets = opts.allowIndentedBullets !== false;
+      const lines = (text || "").replace(/\r\n/g, "\n").split("\n");
+
+      let currentUl = null;
+      const flushUl = () => {
+        if (currentUl) {
+          container.appendChild(currentUl);
+          currentUl = null;
+        }
+      };
+
+      for (const rawLine of lines) {
+        const indent = leadingSpaceCount(rawLine);
+        const trimmed = rawLine.trim();
+
+        if (trimmed === "") {
+          flushUl();
+          container.appendChild(document.createElement("div")).className = "doc-gap";
+          continue;
+        }
+
+        const isIndentedBullet = allowIndentedBullets && indent >= 4;
+        const startsWithBullet =
+          /^[-*]\s+/.test(trimmed) || /^•\s+/.test(trimmed);
+
+        if (isIndentedBullet || startsWithBullet) {
+          if (!currentUl) currentUl = document.createElement("ul");
+          currentUl.className = "doc-bullets";
+
+          const liText = trimmed.replace(/^[-*]\s+/, "").replace(/^•\s+/, "");
+          const li = document.createElement("li");
+          li.textContent = liText;
+          currentUl.appendChild(li);
+          continue;
+        }
+
+        flushUl();
+
+        if (isLikelySectionHeader(trimmed)) {
+          const div = document.createElement("div");
+          div.className = "doc-bold-line";
+          div.textContent = trimmed;
+          container.appendChild(div);
+        } else {
+          const p = document.createElement("div");
+          p.className = "doc-paragraph";
+          p.textContent = trimmed;
+          container.appendChild(p);
+        }
+      }
+
+      flushUl();
+    }
+
     async function generatePlan() {
       const integrationType = document.getElementById("integrationType").value;
       const eventType = document.getElementById("eventType").value;
@@ -397,10 +504,27 @@
 
         const header = document.createElement("div");
         header.className = "chunk-header";
-        header.textContent = path;
+        header.textContent = `Source: ${path}`;
 
         const body = document.createElement("div");
-        body.textContent = content;
+        body.className = "doc-body";
+
+        // JS conversion tracking templates often contain script/code blocks.
+        // Render those chunks as pre-wrapped text and avoid turning indented code into bullets.
+        const suppressBulletsForJsConversionScripts =
+          integrationType === "js" &&
+          path.includes("Conversion Tracking") &&
+          !path.includes("Header");
+
+        if (suppressBulletsForJsConversionScripts) {
+          body.innerHTML = "";
+          const pre = document.createElement("pre");
+          pre.className = "doc-code";
+          pre.textContent = content;
+          body.appendChild(pre);
+        } else {
+          renderDocTextInto(body, content, { allowIndentedBullets: true });
+        }
 
         wrapper.appendChild(header);
         wrapper.appendChild(body);
