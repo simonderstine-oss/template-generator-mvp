@@ -1,0 +1,14 @@
+OVERVIEW
+
+${accountName} to report ${saleParentEventName} sale event,  ${apiLeadChildEventNames} lead events, and ${apiSaleChildEventsNames} sale events on ${siteDefinition} via the impact.com Conversions API.
+
+EVENT NAMES (EVENT IDS) 
+Parent
+    ${saleParentEventName} (${saleParentEventId})
+Lead Child Event(s)
+    ${apiLeadChildEventsNameAndId}
+Sale Child Event(s)
+    ${apiSaleChildEventsNameAndId}
+
+METHOD = Conversions API
+SITE DEFINITION = ${siteDefinition}

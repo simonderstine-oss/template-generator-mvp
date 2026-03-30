@@ -1,0 +1,22 @@
+Example Responses
+
+New session and click created via POST request (direct click):
+    200 OK (JSON)
+    {
+    "clickId": "0ae1xclm2kbgryv3dppspszxce2xhemw1las000x00"
+    }
+
+Capture and store the click id value to send with the Conversions API submission
+
+New session and click suppressed in POST request (click created via gateway):
+    200 OK (JSON)
+    {}
+
+Capture the clickId from the landing page query string to send with the Conversions API submission
+
+Continuing session:
+    200 OK (JSON)
+    {
+    "sessionStart":"2019-02-14T01:10:57Z"
+    }
+

@@ -1,0 +1,27 @@
+TECHNICAL REQUIREMENTS
+
+Configure your custom tracking domain (optional).
+    See the GUIDELINES FOR CUSTOM TRACKING DOMAINS section below for more information.
+Provide the domain(s) for all staging environments where the implementation will be tested
+Confirm the production domain(s) where the implementation will be deployed:
+    ${siteDefinition}
+Confirm Impact can append the parameter, im_ref={clickid}, on all landing page URLs
+    A landing page is any webpage to which a consumer is directed when they click on an ad
+Confirm the production domain(s) and/or URL structure permitted for Deep Linking:
+    ${deepLinking}
+    A Deep Link is any webpage specified by a partner (as a modification to the original ad landing page) to serve as the landing page for an ad for the purpose of promoting a product, product category, offer promotion, or similar tactic. 
+Staging
+    Implement the Page Load API request for all page loads
+    For gateway clicks, capture and store the Click Id from the landing page URL
+    For direct clicks, capture and store the Click Id from the Page Load API response
+    Implement the Page Load API request with customer id and a hashed customer email for logged-in customer
+    Implement Conversion API requests for any/all conversion events
+    Complete end-to-end testing for any/all conversion events
+Production
+    Implement the Page Load API request for all page loads
+    For gateway clicks, capture and store the Click Id from the landing page URL
+    For direct clicks, capture and store the Click Id from the Page Load API response
+    Implement the Page Load API request with customer id and a hashed customer email for logged-in customer
+    Implement Conversion API requests for any/all conversion events
+    Complete end-to-end testing for any/all conversion events
+    Complete conversion event validation for any/all conversion events

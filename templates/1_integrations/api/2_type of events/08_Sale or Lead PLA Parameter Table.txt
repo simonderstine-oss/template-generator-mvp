@@ -1,0 +1,33 @@
+(Table with parameter, decription (data type, and notes columns))
+-------------------------------------------------------------------
+CampaignId: (required)
+Value specific to your Program (${viewId}). (Integer)
+
+PageUrl: (required)
+Full landing page URL, e.g. https://www.mysite.com?utm_source=google&utm_medium=cpc (String)
+
+ReferringUrl: (required)
+The URL of the page the click originated from (String)
+
+CustomProfileId: (required)
+Advertiser’s own unidentified user value.  Anonymous user ID (String 70)
+
+CustomerId: (required on Login)
+Unique customer identifier your platform assigns to customer accounts. Do not use personally identifiable data for this field.  This value must be the same across all events for the same customer. (String 255)
+
+CustomerEmail: (required on Login)
+SHA1 hash of customer’s email. Pass an empty string if unavailable. (String 64)
+
+EventDate: (required)
+Submit one of the following formats:
+ISO-8601 format
+Example: 2017-08-01T23:55:24-08:00
+dd-MMM-yyyy HH:mm:ss z
+Example: 01-AUG-2017 23:55:24 PST
+
+UserAgent: (required)
+A string that identifies the browser and operating system (String 1024)
+
+IpAddress: (required)
+Public Internet IP Address of the customer (String 128)
+

@@ -1,0 +1,13 @@
+OVERVIEW
+
+${accountName} to implement impact.com's Page Load API for tracking site visit and login events on web and to report ${andEventNames} events on ${siteDefinition} via the impact.com Conversions API.
+
+EVENT NAMES (EVENT IDS)
+Lead Event(s)
+${leadEventsNameAndId}
+
+Sale Event(s)
+${saleEventsNameAndId}
+
+METHOD = Conversions API
+SITE DEFINITION = ${siteDefinition}

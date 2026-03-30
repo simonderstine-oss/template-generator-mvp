@@ -1,0 +1,81 @@
+JS Integrations:
+  Brand Header
+  Overview
+  Document History 
+  Technical Requirements
+  How to Contact impact.com
+  Guidelines for Custom Tracking Domains
+  Guidelines for Custom Profile IDs
+  Universal Tracking Tag
+  Identity Function
+  Conversion Tracking Header
+  Conversion Tracking 
+  Parameter Table
+  End to End Testing And Event Validation
+  Resources
+  A_Cookie Banners & Cookie Policies
+  A_Capturing and Storing Click ID
+  A_User Journey
+  A_Creating a Test Partner Account
+  A_How to Access a Test Tracking Link
+  A_Ad Code
+  A_ How to Execute an End to end test with a Test Partner
+
+
+API Integrations (Lead API 1, Lead API 2, Sale API 1, Sale API 2): 
+  Brand Header
+  Overview
+  Document History 
+  Technical Requirements
+  How to Contact impact.com
+  Guidelines for Custom Tracking Domains
+  Capturing and Storing ClickID
+  Reporting Conversion Events via Conversions API
+  Api Call
+  Parameter Table
+  End to End Testing And Event Validation
+  Resources
+  Creating a Partner Test Account
+  How to Access a Test Tracking Link
+  Ad Code 
+  A_ How to Execute an End to end test with a Test Partner
+
+API Parent Integrations (Sale Parent API 2, Lead Parent API 2): 
+  Brand Header
+  Overview
+  Document History 
+  Technical Requirements
+  How to Contact impact.com
+  Guidelines for Custom Tracking Domains
+  Capturing and Storing ClickID
+  Reporting Conversion Events via Conversions API
+  Lead Api Call
+  Sale API Call
+  Parameter Table
+  End to End Testing And Event Validation
+  Resources
+  Creating a Partner Test Account
+  How to Access a Test Tracking Link
+  Ad Code 
+  A_ How to Execute an End to end test with a Test Partner
+
+  API PLA Integrations (Sale&Parent PLA API 2)
+    Brand Header
+    Overview
+    Document History 
+    Technical Requirements Parent & PLA
+    How to Contact impact.com
+    Guidelines for Custom Tracking Domains
+    Capturing and Storing ClickID
+    PLA Call
+    PLA Parameter Table
+    Reporting Conversion Events via Conversions API
+    Lead Api Call
+    Sale API Call
+    Conversions Parameter Table
+    End to End Testing And Event Validation
+    Resources
+    Creating a Partner Test Account
+    How to Access a Test Tracking Link
+    Ad Code 
+    A_ How to Execute an End to end test with a Test Partner

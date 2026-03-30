@@ -1,0 +1,64 @@
+(Table with parameter, decription (data type, and notes columns))
+-------------------------------------------------------------------
+CampaignId: (required)
+Value specific to your Program (${viewId}). (Integer)
+
+ActionTrackerId: (required)
+Use the following ids:
+
+Lead Event(s)
+${leadEventsNameAndId}
+
+Sale Event(s)
+${saleEventsNameAndId}
+
+EventDate: (required)
+Submit one of the following formats:
+ISO-8601 format
+Example: 2017-08-01T23:55:24-08:00
+dd-MMM-yyyy HH:mm:ss z
+Example: 01-AUG-2017 23:55:24 PST
+
+IpAddress: (recommended)
+Public Internet IP Address of the customer. The IP address is used to help the system identify fraudulent activity. (String 128)
+
+ClickId: (required)
+Send the Click Id value captured on the landing page URL. (String 128) 
+
+OrderId: (required)
+Unique trackable ID for each event. (AlphaNumeric 64)
+
+CustomerId: (recommended)
+Unique customer identifier your platform assigns to customer accounts. Do not use personally identifiable data for this field. Pass an empty string if unavailable. (String 255)
+
+CustomerEmail: (recommended)
+SHA1 hash of customer’s email. Pass an empty string if unavailable. (String 64)
+
+CustomerStatus: (recommended)
+Use values of “New” or “Returning”. This value can be used to alter payouts. (AlphaNumeric 40)
+
+OrderDiscount: (required)
+The sum of all discounts applied to the conversion. This will be subtracted proportionally from the item-level subtotals when revenue values are calculated by Impact. (Decimal 8,2)
+
+OrderPromoCode: (recommended)
+Pass a single promo code (stacked promo codes are not supported).  Pass an empty string if unavailable. This value can be used to alter payouts. (String 64)
+
+CurrencyCode: (recommended)
+ISO 4217 currency code (e.g. USD); impact.com will default the currency to USD if no currencycode value is provided. (String 3)
+
+ItemCategory{i}: (required)
+The item category identifier. This value can be used to alter payouts. (String 64)
+
+ItemSku{i}: (required)
+The item-specific identifier. (AlphaNumeric 40)
+
+ItemSubTotal{i}: (required)
+SKU set subtotal (quantity*price) of the line item (excluding discounts, shipping, vat, gst, or other tax). (Decimal 8,2)
+
+ItemQuantity{i}: (required)
+The quantity of the line item. (Integer)
+
+ItemName{i}: (optional)
+The name of the line item. (String 128)
+
+- Additional parameters are available upon request
