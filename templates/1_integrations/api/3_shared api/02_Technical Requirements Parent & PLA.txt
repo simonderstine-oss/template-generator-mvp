@@ -25,3 +25,9 @@ Production
     Implement Conversion API requests for any/all conversion events
     Complete end-to-end testing for any/all conversion events
     Complete conversion event validation for any/all conversion events
+
+IMPORTANT
+    API calls where authentication credentials (Account SID and Auth Token) are sent need to be performed server-side to prevent the interception of the API request
+    The API calls should be retried in case of a 5xx response code or timeouts. If the calls have been made for a reasonable amount of time and you still encounter a server error, please open a ticket in your Impact account
+    Please note that a client error code (4xx) indicates that you need to revise the request to correct the problem before trying again
+

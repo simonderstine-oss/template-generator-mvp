@@ -44,7 +44,7 @@ API Parent Integrations (Sale Parent API 2, Lead Parent API 2):
   Brand Header
   Overview
   Document History 
-  Technical Requirements
+  Technical Requirements Parent & PLA
   How to Contact impact.com
   Guidelines for Custom Tracking Domains
   Capturing and Storing ClickID
@@ -69,6 +69,7 @@ API Parent Integrations (Sale Parent API 2, Lead Parent API 2):
     Capturing and Storing ClickID
     PLA Call
     PLA Parameter Table
+    09_Sale or Lead PLA Example Responses.txt
     Reporting Conversion Events via Conversions API
     Lead Api Call
     Sale API Call

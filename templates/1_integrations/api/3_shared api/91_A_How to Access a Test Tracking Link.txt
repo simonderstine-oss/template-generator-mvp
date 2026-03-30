@@ -6,8 +6,8 @@ How to Access a Test Tracking Link
         If desired, input a landing page
             This is only necessary if you need to test a page other than the default landing page
         Click the "Create" button to generate the test tracking link
-        From your impact.com Brand account
-    Log in to your impact.com brand account
+    From your impact.com Brand account
+        Log in to your impact.com brand account
         Navigate to Engage > Content > Ads
         Expand the Actions drop down menu for any ad and select "Send To Media"
         On the Send Ads screen, select your test partner account in the Partner field
