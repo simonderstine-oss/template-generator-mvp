@@ -114,6 +114,32 @@
       font-size: 0.8rem;
       color: #6b7280;
     }
+    textarea {
+      width: 100%;
+      min-height: 110px;
+      border: 1px solid #cbd2d9;
+      border-radius: 4px;
+      padding: 0.5rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      resize: vertical;
+    }
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .meta {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+    }
+    .meta p {
+      margin: 0.25rem 0;
+    }
   </style>
 </head>
 <body>
@@ -152,9 +178,19 @@
           <option value="2plus">2+</option>
         </select>
       </div>
+      <div class="field">
+        <label class="toggle" for="useAiPreview">
+          <input id="useAiPreview" type="checkbox" />
+          AI Assist (Preview)
+        </label>
+      </div>
+      <div class="field hidden" id="nlRequestField">
+        <label for="naturalLanguageRequest">Natural language request</label>
+        <textarea id="naturalLanguageRequest" placeholder="Example: Build a sale API plan for 2+ events with implementation assumptions and a short risk section."></textarea>
+      </div>
       <button id="generateBtn" type="button">Generate Tech Plan</button>
       <p class="hint">
-        Generated tech plan appears to the right. Reloading the page clears the output.
+        Generated tech plan appears to the right. Run with <code>npm start</code> and open <code>http://localhost:8000</code>.
       </p>
     </div>
 
@@ -162,220 +198,13 @@
   </div>
 
   <script>
-    const API_ROOT = "templates/1_integrations/api/";
-    const API_SHARED = API_ROOT + "3_shared api/";
-    const API_NUM = API_ROOT + "1_num of events/";
-    const API_EVENTS = API_ROOT + "2_type of events/";
-
-    function apiAppendix() {
-      return [
-        "templates/0_shared/05_End To End Testing And Event Validation.txt",
-        "templates/0_shared/06_Resources.txt",
-        API_SHARED + "90_A_Creating a Test Partner Account.txt",
-        API_SHARED + "91_A_How to Access a Test Tracking Link.txt",
-        API_SHARED + "92_A_Ad Code.txt",
-        API_SHARED + "93_A_How to Execute an End to End Test with a Test Partner.txt"
-      ];
-    }
-
-    /**
-     * Standard API (Lead API 1/2, Sale API 1/2) — order per templates.txt "API Integrations".
-     */
-    function getApiStandardFiles(eventType, eventCount) {
-      const overview =
-        eventCount === "1"
-          ? API_NUM + "01_Sale or Lead Overview 1.txt"
-          : API_NUM + "02_Sale or Lead Overview 2.txt";
-
-      const callAndParam =
-        eventType === "sale"
-          ? [API_EVENTS + "01_Sale api Call.txt", API_EVENTS + "02_Sale api Parameter Table.txt"]
-          : [API_EVENTS + "03_Lead api Call.txt", API_EVENTS + "04_Lead api Parameter Table.txt"];
-
-      return [
-        "templates/0_shared/01_Brand Header.txt",
-        overview,
-        "templates/0_shared/02_Document History.txt",
-        API_SHARED + "01_Technical Requirements.txt",
-        "templates/0_shared/03_How to Contact impact.com.txt",
-        "templates/0_shared/04_Guidelines For Custom Tracking Domains.txt",
-        API_SHARED + "03_Capturing and Storing ClickID.txt",
-        API_SHARED + "04_Reporting Conversion Events via Conversions API.txt",
-        ...callAndParam,
-        ...apiAppendix()
-      ];
-    }
-
-    /**
-     * API Parent (Lead Parent API 2, Sale Parent API 2) — per templates.txt "API Parent Integrations".
-     */
-    function getApiLeadParent2Files() {
-      return [
-        "templates/0_shared/01_Brand Header.txt",
-        API_NUM + "04_Lead Parent Overview 2.txt",
-        "templates/0_shared/02_Document History.txt",
-        API_SHARED + "02_Technical Requirements Parent & PLA.txt",
-        "templates/0_shared/03_How to Contact impact.com.txt",
-        "templates/0_shared/04_Guidelines For Custom Tracking Domains.txt",
-        API_SHARED + "03_Capturing and Storing ClickID.txt",
-        API_SHARED + "04_Reporting Conversion Events via Conversions API.txt",
-        API_EVENTS + "03_Lead api Call.txt",
-        API_EVENTS + "01_Sale api Call.txt",
-        API_EVENTS + "06_Lead Parent Conversions Parameter Table.txt",
-        ...apiAppendix()
-      ];
-    }
-
-    function getApiSaleParent2Files() {
-      return [
-        "templates/0_shared/01_Brand Header.txt",
-        API_NUM + "03_Sale Parent Overview 2.txt",
-        "templates/0_shared/02_Document History.txt",
-        API_SHARED + "02_Technical Requirements Parent & PLA.txt",
-        "templates/0_shared/03_How to Contact impact.com.txt",
-        "templates/0_shared/04_Guidelines For Custom Tracking Domains.txt",
-        API_SHARED + "03_Capturing and Storing ClickID.txt",
-        API_SHARED + "04_Reporting Conversion Events via Conversions API.txt",
-        API_EVENTS + "03_Lead api Call.txt",
-        API_EVENTS + "01_Sale api Call.txt",
-        API_EVENTS + "05_Sale Parent Conversions Parameter Table.txt",
-        ...apiAppendix()
-      ];
-    }
-
-    /**
-     * API PLA variants — per templates.txt "API PLA Integrations" (PLA call → PLA param → example responses → Reporting → Lead → Sale → conversions param table).
-     */
-    function getApiPlaVariantFiles(overviewFile, finalConversionsParamTable) {
-      return [
-        "templates/0_shared/01_Brand Header.txt",
-        overviewFile,
-        "templates/0_shared/02_Document History.txt",
-        API_SHARED + "02_Technical Requirements Parent & PLA.txt",
-        "templates/0_shared/03_How to Contact impact.com.txt",
-        "templates/0_shared/04_Guidelines For Custom Tracking Domains.txt",
-        API_SHARED + "03_Capturing and Storing ClickID.txt",
-        API_EVENTS + "07_Sale or Lead PLA Call.txt",
-        API_EVENTS + "08_Sale or Lead PLA Parameter Table.txt",
-        API_EVENTS + "09_Sale or Lead PLA Example Responses.txt",
-        API_SHARED + "04_Reporting Conversion Events via Conversions API.txt",
-        API_EVENTS + "03_Lead api Call.txt",
-        API_EVENTS + "01_Sale api Call.txt",
-        finalConversionsParamTable,
-        ...apiAppendix()
-      ];
-    }
-
-    function getApiLeadSalePla2Files() {
-      return getApiPlaVariantFiles(
-        API_NUM + "05_Lead & Sale Overview 2.txt",
-        API_EVENTS + "10_Lead & Sale PLA Conversions Parameter Table.txt"
-      );
-    }
-
-    function getApiLeadParentPla2Files() {
-      return getApiPlaVariantFiles(
-        API_NUM + "04_Lead Parent Overview 2.txt",
-        API_EVENTS + "11_Lead Parent PLA Conversions Parameter Table.txt"
-      );
-    }
-
-    function getApiSaleParentPla2Files() {
-      return getApiPlaVariantFiles(
-        API_NUM + "03_Sale Parent Overview 2.txt",
-        API_EVENTS + "12_Sale Parent PLA Conversions Parameter Table.txt"
-      );
-    }
-
-    function getApiFilesByVariant(variant, eventType, eventCount) {
-      switch (variant) {
-        case "standard":
-          return getApiStandardFiles(eventType, eventCount);
-        case "lead_parent_2":
-          return getApiLeadParent2Files();
-        case "sale_parent_2":
-          return getApiSaleParent2Files();
-        case "lead_sale_pla_2":
-          return getApiLeadSalePla2Files();
-        case "lead_parent_pla_2":
-          return getApiLeadParentPla2Files();
-        case "sale_parent_pla_2":
-          return getApiSaleParentPla2Files();
-        default:
-          return getApiStandardFiles(eventType, eventCount);
-      }
-    }
-
-    // JS integration: build ordered list of modules per templates.txt "JS Integrations".
-    function getJsFiles(eventType, eventCount) {
-      const files = [];
-
-      files.push("templates/0_shared/01_Brand Header.txt");
-
-      if (eventType === "sale") {
-        if (eventCount === "1") {
-          files.push("templates/1_integrations/js/1_num of events/01_Sale 1 Overview.txt");
-        } else {
-          files.push("templates/1_integrations/js/1_num of events/03_Sale 2 Overview.txt");
-        }
-      } else if (eventType === "lead") {
-        files.push("templates/1_integrations/js/1_num of events/05_Lead 1 or 2 Overview.txt");
-      }
-
-      files.push("templates/0_shared/02_Document History.txt");
-      files.push("templates/1_integrations/js/3_shared js/01_Technical Requirements.txt");
-      files.push("templates/0_shared/03_How to Contact impact.com.txt");
-      files.push("templates/0_shared/04_Guidelines For Custom Tracking Domains.txt");
-      files.push("templates/1_integrations/js/3_shared js/03_Guidelines For Custom Profile IDs.txt");
-      files.push("templates/1_integrations/js/3_shared js/04_Universal Tracking Tag.txt");
-      files.push("templates/1_integrations/js/3_shared js/05_Identity Function.txt");
-
-      if (eventType === "sale") {
-        if (eventCount === "1") {
-          files.push("templates/1_integrations/js/1_num of events/02_Sale 1 Conversion Tracking Header.txt");
-        } else {
-          files.push("templates/1_integrations/js/1_num of events/04_Sale 2 Conversion Tracking Header.txt");
-        }
-      } else if (eventType === "lead") {
-        files.push("templates/1_integrations/js/1_num of events/06_Lead 1 or 2 Conversion Tracking Header.txt");
-      }
-
-      if (eventType === "sale") {
-        files.push("templates/1_integrations/js/2_type of events/01_Sale js Conversion Tracking.txt");
-      } else if (eventType === "lead") {
-        files.push("templates/1_integrations/js/2_type of events/03_Lead js Conversion Tracking.txt");
-      }
-
-      if (eventType === "sale") {
-        files.push("templates/1_integrations/js/2_type of events/02_Sale js Parameter Table.txt");
-      } else if (eventType === "lead") {
-        files.push("templates/1_integrations/js/2_type of events/04_Lead js Parameter Table.txt");
-      }
-
-      files.push("templates/0_shared/05_End To End Testing And Event Validation.txt");
-      files.push("templates/0_shared/06_Resources.txt");
-      files.push("templates/1_integrations/js/3_shared js/93_A_Cookie Banners & Cookie Policies.txt");
-      files.push("templates/1_integrations/js/3_shared js/94_A_Capturing and Storing Click ID.txt");
-
-      if (eventCount === "1") {
-        files.push("templates/1_integrations/js/1_num of events/07_A_Sale 1 User Journey .txt");
-      } else {
-        files.push("templates/1_integrations/js/1_num of events/08_A_Sale or Lead 2 User Journey.txt");
-      }
-
-      files.push("templates/1_integrations/js/3_shared js/95_A_Creating a Test Partner Account.txt");
-      files.push("templates/1_integrations/js/3_shared js/96_A_How to Access a Test Tracking Link.txt");
-      files.push("templates/1_integrations/js/3_shared js/97_A_Ad Code.txt");
-      files.push("templates/1_integrations/js/3_shared js/98_A_How to Execute an End to End Test with Test Partner.txt");
-
-      return files;
-    }
-
     function updateFormVisibility() {
       const integrationType = document.getElementById("integrationType").value;
       const variantField = document.getElementById("apiPlanVariantField");
       const eventTypeField = document.getElementById("eventTypeField");
       const eventCountField = document.getElementById("eventCountField");
+      const nlRequestField = document.getElementById("nlRequestField");
+      const useAiPreview = document.getElementById("useAiPreview").checked;
       const variant = document.getElementById("apiPlanVariant").value;
 
       if (integrationType === "api") {
@@ -392,15 +221,12 @@
         eventTypeField.classList.remove("hidden");
         eventCountField.classList.remove("hidden");
       }
-    }
 
-    async function fetchTextFile(path) {
-      const resp = await fetch(path);
-      if (!resp.ok) {
-        return { path, content: `Error loading file (${resp.status})` };
+      if (useAiPreview) {
+        nlRequestField.classList.remove("hidden");
+      } else {
+        nlRequestField.classList.add("hidden");
       }
-      const text = await resp.text();
-      return { path, content: text };
     }
 
     function isAllCapsHeader(trimmedLine) {
@@ -479,52 +305,79 @@
       flushUl();
     }
 
+    function renderMeta(summary) {
+      const block = document.createElement("div");
+      block.className = "meta";
+      block.innerHTML = `
+        <p><strong>Mode:</strong> ${summary.mode}</p>
+        <p><strong>Prompt version:</strong> ${summary.promptVersion || "n/a"}</p>
+        <p><strong>Source files:</strong> ${summary.sourceFiles.length}</p>
+      `;
+      return block;
+    }
+
     async function generatePlan() {
       const integrationType = document.getElementById("integrationType").value;
       const eventType = document.getElementById("eventType").value;
       const eventCount = document.getElementById("eventCount").value;
       const apiPlanVariant = document.getElementById("apiPlanVariant").value;
+      const useAiPreview = document.getElementById("useAiPreview").checked;
+      const naturalLanguageRequest = document.getElementById("naturalLanguageRequest").value.trim();
 
       const outputContainer = document.getElementById("outputContainer");
       outputContainer.innerHTML = "";
+      outputContainer.textContent = "Generating...";
 
-      let filesToLoad = [];
+      let payload;
+      try {
+        const response = await fetch("/api/plan/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            integrationType,
+            eventType,
+            eventCount,
+            apiPlanVariant,
+            useAiPreview,
+            naturalLanguageRequest
+          })
+        });
+        payload = await response.json();
+        outputContainer.innerHTML = "";
 
-      if (integrationType === "js") {
-        filesToLoad = getJsFiles(eventType, eventCount);
-      } else {
-        filesToLoad = getApiFilesByVariant(apiPlanVariant, eventType, eventCount);
+        if (!response.ok) {
+          outputContainer.textContent = payload.error || "Failed to generate plan.";
+          return;
+        }
+      } catch (error) {
+        outputContainer.innerHTML = "";
+        outputContainer.textContent = `Request failed: ${error.message || "Unknown error"}`;
+        return;
       }
 
-      const results = await Promise.all(filesToLoad.map(fetchTextFile));
+      outputContainer.appendChild(renderMeta(payload));
 
-      results.forEach(({ path, content }) => {
+      if (payload.missingInputs && payload.missingInputs.length) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "chunk";
+        const body = document.createElement("div");
+        body.className = "doc-body";
+        renderDocTextInto(body, `Missing Inputs:\n- ${payload.missingInputs.join("\n- ")}`);
+        wrapper.appendChild(body);
+        outputContainer.appendChild(wrapper);
+      }
+
+      (payload.sections || []).forEach((section, index) => {
         const wrapper = document.createElement("div");
         wrapper.className = "chunk";
 
         const header = document.createElement("div");
         header.className = "chunk-header";
-        header.textContent = `Source: ${path}`;
+        header.textContent = `${index + 1}. ${section.title} (${section.sectionId})`;
 
         const body = document.createElement("div");
         body.className = "doc-body";
-
-        // JS conversion tracking templates often contain script/code blocks.
-        // Render those chunks as pre-wrapped text and avoid turning indented code into bullets.
-        const suppressBulletsForJsConversionScripts =
-          integrationType === "js" &&
-          path.includes("Conversion Tracking") &&
-          !path.includes("Header");
-
-        if (suppressBulletsForJsConversionScripts) {
-          body.innerHTML = "";
-          const pre = document.createElement("pre");
-          pre.className = "doc-code";
-          pre.textContent = content;
-          body.appendChild(pre);
-        } else {
-          renderDocTextInto(body, content, { allowIndentedBullets: true });
-        }
+        renderDocTextInto(body, section.content, { allowIndentedBullets: true });
 
         wrapper.appendChild(header);
         wrapper.appendChild(body);
@@ -534,6 +387,7 @@
 
     document.getElementById("integrationType").addEventListener("change", updateFormVisibility);
     document.getElementById("apiPlanVariant").addEventListener("change", updateFormVisibility);
+    document.getElementById("useAiPreview").addEventListener("change", updateFormVisibility);
     document.getElementById("generateBtn").addEventListener("click", generatePlan);
 
     updateFormVisibility();

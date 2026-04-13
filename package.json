@@ -1,0 +1,9 @@
+{
+  "name": "template-generator-mvp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tech plan generator with Gemini-backed natural language mode",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
