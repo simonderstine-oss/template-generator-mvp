@@ -6,11 +6,18 @@ const path = require("node:path");
 const { getFilesForSelection } = require("./server/lib/templateSelector");
 const { loadTemplateChunks, renderPlanText } = require("./server/lib/templateLoader");
 const { listLibraryPlans, parseLibraryPlanId } = require("./server/lib/libraryCatalog");
-const { buildSystemPrompt, buildUserPrompt, PROMPT_VERSION } = require("./server/llm/promptBuilder");
+const { PROMPT_VERSION } = require("./server/llm/promptBuilder");
+const {
+  SELECTION_ASSIST_PROMPT_VERSION,
+  buildSelectionAssistSystemPrompt,
+  buildSelectionAssistUserPrompt
+} = require("./server/llm/selectionAssistPrompt");
 const { generatePlanJson } = require("./server/llm/generatePlanJson");
-const { validatePlanSchema } = require("./server/validation/planSchema");
-const { validateAgainstCanonicalRules } = require("./server/validation/planValidation");
-const { API_VARIANTS, DEFAULT_API_VARIANT, EVENT_COUNTS, EVENT_TYPES, INTEGRATION_TYPES } = require("./server/config/canonicalRules");
+const { validateSelectionAssistResponse } = require("./server/validation/selectionAssistSchema");
+const { extractJsonString } = require("./server/llm/extractModelJson");
+const { DEFAULT_API_VARIANT } = require("./server/config/canonicalRules");
+const { normalizeSelection } = require("./server/lib/normalizeSelection");
+const { mergeAiSelectionOverrides } = require("./server/lib/mergeAiSelection");
 
 const PORT = Number(process.env.PORT || 8000);
 const REPO_ROOT = __dirname;
@@ -27,20 +34,6 @@ function getContentType(filePath) {
   if (filePath.endsWith(".txt")) return "text/plain; charset=utf-8";
   if (filePath.endsWith(".json")) return "application/json; charset=utf-8";
   return "application/octet-stream";
-}
-
-function normalizeSelection(body) {
-  const integrationType = INTEGRATION_TYPES.includes(body.integrationType) ? body.integrationType : "js";
-  const eventType = EVENT_TYPES.includes(body.eventType) ? body.eventType : "sale";
-  const eventCount = EVENT_COUNTS.includes(body.eventCount) ? body.eventCount : "1";
-  const apiPlanVariant = API_VARIANTS.includes(body.apiPlanVariant) ? body.apiPlanVariant : DEFAULT_API_VARIANT;
-
-  return {
-    integrationType,
-    eventType,
-    eventCount,
-    apiPlanVariant: integrationType === "api" ? apiPlanVariant : null
-  };
 }
 
 async function parseJsonBody(req) {
@@ -88,22 +81,22 @@ async function handlePlanGenerate(req, res) {
   const startedAt = Date.now();
   try {
     const body = await parseJsonBody(req);
-    const selection = normalizeSelection(body);
-    const sourceFiles = getFilesForSelection({
-      integrationType: selection.integrationType,
-      eventType: selection.eventType,
-      eventCount: selection.eventCount,
-      apiPlanVariant: selection.apiPlanVariant || DEFAULT_API_VARIANT
-    });
-    const canonicalChunks = await loadTemplateChunks(REPO_ROOT, sourceFiles);
-    const deterministicText = renderPlanText(canonicalChunks);
+    const formSelection = normalizeSelection(body);
     const useAi = ENABLE_AI_PREVIEW && Boolean(body.useAiPreview);
 
     if (!useAi) {
+      const sourceFiles = getFilesForSelection({
+        integrationType: formSelection.integrationType,
+        eventType: formSelection.eventType,
+        eventCount: formSelection.eventCount,
+        apiPlanVariant: formSelection.apiPlanVariant || DEFAULT_API_VARIANT
+      });
+      const canonicalChunks = await loadTemplateChunks(REPO_ROOT, sourceFiles);
+      const deterministicText = renderPlanText(canonicalChunks);
       writeJson(res, 200, {
         mode: "deterministic",
         promptVersion: PROMPT_VERSION,
-        selection,
+        selection: formSelection,
         sourceFiles,
         warnings: [],
         assumptions: [],
@@ -119,65 +112,69 @@ async function handlePlanGenerate(req, res) {
       return;
     }
 
-    const systemPrompt = buildSystemPrompt();
-    const userPrompt = buildUserPrompt({
-      naturalLanguageRequest: String(body.naturalLanguageRequest || "").trim(),
-      selection,
-      chunks: canonicalChunks
+    const nl = String(body.naturalLanguageRequest || "").trim();
+    const systemPrompt = buildSelectionAssistSystemPrompt();
+    const userPrompt = buildSelectionAssistUserPrompt({
+      naturalLanguageRequest: nl,
+      selection: formSelection
     });
 
-    const firstRaw = await generatePlanJson({ systemPrompt, userPrompt });
-    let parsed = JSON.parse(firstRaw);
-    let schema = validatePlanSchema(parsed);
-    let rules = validateAgainstCanonicalRules(parsed, canonicalChunks);
-    let validFirstPass = schema.valid && rules.valid;
-
-    if (!validFirstPass) {
-      const repairPrompt = JSON.stringify({
-        task: "Repair this JSON plan so it is valid for schema and canonical section order.",
-        schemaErrors: schema.errors,
-        ruleErrors: rules.errors,
-        expectedSectionIds: canonicalChunks.map((chunk) => chunk.sectionId),
-        invalidPlan: parsed
-      });
-      const repairedRaw = await generatePlanJson({
-        systemPrompt: buildSystemPrompt(),
-        userPrompt: repairPrompt
-      });
-      parsed = JSON.parse(repairedRaw);
-      schema = validatePlanSchema(parsed);
-      rules = validateAgainstCanonicalRules(parsed, canonicalChunks);
-    }
-
-    if (!schema.valid || !rules.valid) {
+    const rawText = await generatePlanJson({ systemPrompt, userPrompt });
+    let parsedAssist;
+    try {
+      parsedAssist = JSON.parse(extractJsonString(rawText));
+    } catch (parseErr) {
       writeJson(res, 422, {
-        error: "AI response failed validation",
-        schemaErrors: schema.errors,
-        ruleErrors: rules.errors
+        error: "AI returned invalid JSON for selection assist",
+        detail: parseErr.message || String(parseErr)
       });
       return;
     }
+
+    const assistValid = validateSelectionAssistResponse(parsedAssist);
+    if (!assistValid.valid || !assistValid.cleaned) {
+      writeJson(res, 422, {
+        error: "AI selection assist failed validation",
+        schemaErrors: assistValid.errors
+      });
+      return;
+    }
+
+    const mergedSelection = mergeAiSelectionOverrides(formSelection, assistValid.cleaned);
+    const sourceFiles = getFilesForSelection({
+      integrationType: mergedSelection.integrationType,
+      eventType: mergedSelection.eventType,
+      eventCount: mergedSelection.eventCount,
+      apiPlanVariant: mergedSelection.apiPlanVariant || DEFAULT_API_VARIANT
+    });
+    const canonicalChunks = await loadTemplateChunks(REPO_ROOT, sourceFiles);
+
+    const sections = canonicalChunks.map((chunk) => ({
+      sectionId: chunk.sectionId,
+      title: chunk.title,
+      content: chunk.content,
+      confidence: "high"
+    }));
 
     const durationMs = Date.now() - startedAt;
     console.log(JSON.stringify({
       event: "plan_generation",
       mode: "ai_preview",
-      promptVersion: PROMPT_VERSION,
+      promptVersion: `${PROMPT_VERSION}+${SELECTION_ASSIST_PROMPT_VERSION}`,
       durationMs,
-      validFirstPass,
-      sectionCount: parsed.sections.length
+      sectionCount: sections.length
     }));
 
     writeJson(res, 200, {
       mode: "ai_preview",
-      promptVersion: PROMPT_VERSION,
-      selection,
+      promptVersion: `${PROMPT_VERSION}+${SELECTION_ASSIST_PROMPT_VERSION}`,
+      selection: mergedSelection,
       sourceFiles,
-      warnings: parsed.warnings || [],
-      assumptions: parsed.assumptions || [],
-      missingInputs: parsed.missingInputs || [],
-      sections: parsed.sections,
-      planText: renderPlanFromStructuredSections(parsed.sections)
+      warnings: assistValid.cleaned.warnings,
+      assumptions: assistValid.cleaned.assumptions,
+      missingInputs: assistValid.cleaned.missingInputs,
+      sections,
+      planText: renderPlanFromStructuredSections(sections)
     });
   } catch (error) {
     const status = Number(error.httpStatus) === 429 ? 429 : 500;

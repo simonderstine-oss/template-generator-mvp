@@ -30,10 +30,10 @@ The server loads `.env` automatically via [dotenv](https://github.com/motdotla/d
 
 **Shared**
 
-- `LLM_TIMEOUT_MS` — optional request timeout in ms (defaults: **120000** for `openai_compatible`, **20000** for Gemini). Local models often need a higher value on cold start or large prompts.
+- `LLM_TIMEOUT_MS` — optional request timeout in ms (defaults: **120000** for `openai_compatible`, **20000** for Gemini). Raise it if your local model is slow on cold start.
 - `ENABLE_AI_PREVIEW` (optional, default: `true`)
 - `PLAN_API_TOKEN` (optional bearer token for API auth)
 
-Local models may have **smaller context windows** than cloud Gemini. If requests fail or truncate, narrow integration/event options in the UI or use a runner / quant with enough context for your template bundle.
+When **AI Assist (Preview)** is enabled, the LLM receives a **small prompt only** (current form selections + your natural-language request). It returns JSON used to **optionally override** integration type, API variant, event type/count, plus `assumptions`, `warnings`, and `missingInputs`. The **plan body is always assembled from templates on disk** (same as deterministic mode)—the model does **not** rewrite full section text, which keeps requests fast and avoids huge prompts.
 
-When **AI Assist (Preview)** is enabled in the UI, the app calls `POST /api/plan/generate` and requests a structured JSON plan from the configured backend, then validates it against canonical section order rules.
+Local models may still need adequate `LLM_TIMEOUT_MS` on cold start or slow hardware.

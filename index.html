@@ -189,7 +189,7 @@
       </div>
       <div class="field hidden" id="nlRequestField">
         <label for="naturalLanguageRequest">Natural language request</label>
-        <textarea id="naturalLanguageRequest" placeholder="Example: Build a sale API plan for 2+ events with implementation assumptions and a short risk section."></textarea>
+        <textarea id="naturalLanguageRequest" placeholder="Example: Use the Lead Parent API 2 plan with 2+ events. Add assumptions about staging and cookie consent."></textarea>
       </div>
       <button id="generateBtn" type="button">Generate Tech Plan</button>
       <p class="hint">
@@ -311,10 +311,16 @@
     function renderMeta(summary) {
       const block = document.createElement("div");
       block.className = "meta";
+      const sel = summary.selection || {};
+      const variantLine =
+        sel.integrationType === "api"
+          ? `<p><strong>Effective selection:</strong> ${sel.integrationType}, ${sel.eventType}, ${sel.eventCount}, variant ${sel.apiPlanVariant || "standard"}</p>`
+          : `<p><strong>Effective selection:</strong> ${sel.integrationType}, ${sel.eventType}, ${sel.eventCount}</p>`;
       block.innerHTML = `
         <p><strong>Mode:</strong> ${summary.mode}</p>
         <p><strong>Prompt version:</strong> ${summary.promptVersion || "n/a"}</p>
         <p><strong>Source files:</strong> ${summary.sourceFiles.length}</p>
+        ${variantLine}
       `;
       return block;
     }
