@@ -2,7 +2,10 @@
   "name": "template-generator-mvp",
   "version": "1.0.0",
   "private": true,
-  "description": "Tech plan generator with Gemini-backed natural language mode",
+  "description": "Tech plan generator with Gemini or OpenAI-compatible local LLM support",
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  },
   "scripts": {
     "start": "node server.js"
   }

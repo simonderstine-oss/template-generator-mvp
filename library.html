@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Library · Template Tech Plans</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 1.5rem 2rem;
+      background: #f4f5f7;
+      color: #1f2933;
+    }
+    a {
+      color: #2563eb;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin: 0 0 0.5rem;
+    }
+    .sub {
+      margin: 0 0 1.25rem;
+      font-size: 0.9rem;
+      color: #52606d;
+    }
+    .library-layout {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: stretch;
+    }
+    .panel {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1rem 1.1rem;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+      min-height: 200px;
+      flex: 1 1 200px;
+      max-height: 75vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .panel > h2 {
+      flex-shrink: 0;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #64748b;
+      margin: 0 0 0.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .panel-scroll {
+      flex: 1 1 0;
+      min-height: 0;
+      overflow-y: auto;
+      padding-right: 0.15rem;
+    }
+    ul.plan-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .plan-idx {
+      display: inline-block;
+      min-width: 2.25rem;
+      margin-right: 0.35rem;
+      font-variant-numeric: tabular-nums;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .plan-list li {
+      margin: 0;
+      padding: 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .plan-list button {
+      width: 100%;
+      text-align: left;
+      padding: 0.55rem 0.35rem;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: #1f2933;
+      border-radius: 4px;
+    }
+    .plan-list button:hover {
+      background: #f8fafc;
+    }
+    .plan-list button.active {
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-weight: 600;
+    }
+    .chunk-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .chunk-list li {
+      margin: 0;
+      padding: 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .chunk-list button {
+      width: 100%;
+      text-align: left;
+      padding: 0.45rem 0.35rem;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: #334155;
+      border-radius: 4px;
+    }
+    .chunk-list button:hover {
+      background: #f8fafc;
+    }
+    .chunk-list button.active {
+      background: #fff7ed;
+      color: #c2410c;
+      font-weight: 600;
+    }
+    .chunk-path {
+      display: block;
+      font-size: 0.72rem;
+      color: #94a3b8;
+      font-weight: 400;
+      margin-top: 0.15rem;
+    }
+    .content-panel {
+      flex: 2 1 320px;
+      min-height: 280px;
+    }
+    .chunk-body {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.4;
+      color: #111827;
+    }
+    .placeholder {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+    .err {
+      color: #b91c1c;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Library</h1>
+  <p class="sub">
+    View-only catalog of every tech plan bundle this tool can assemble.
+    <a href="/">Back to generator</a>
+  </p>
+
+  <div id="globalErr" class="err" style="display:none"></div>
+
+  <div class="library-layout">
+    <div class="panel">
+      <h2>Tech plans</h2>
+      <div class="panel-scroll">
+        <ul id="planList" class="plan-list"></ul>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Sections</h2>
+      <div class="panel-scroll">
+        <ul id="chunkList" class="chunk-list"></ul>
+        <p id="chunkPlaceholder" class="placeholder">Select a tech plan.</p>
+      </div>
+    </div>
+    <div class="panel content-panel">
+      <h2>Chunk text</h2>
+      <div class="panel-scroll">
+        <p id="contentPlaceholder" class="placeholder">Select a section.</p>
+        <pre id="chunkContent" class="chunk-body" style="display:none"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let plans = [];
+    let chunksCache = [];
+    let selectedPlanId = null;
+    let selectedChunkIndex = -1;
+
+    function showErr(msg) {
+      const el = document.getElementById("globalErr");
+      el.style.display = msg ? "block" : "none";
+      el.textContent = msg || "";
+    }
+
+    async function loadPlans() {
+      showErr("");
+      const res = await fetch("/api/library/plans");
+      if (!res.ok) {
+        const t = await res.text();
+        showErr("Could not load plans (" + res.status + "). " + t);
+        return;
+      }
+      plans = await res.json();
+      const ol = document.getElementById("planList");
+      ol.innerHTML = "";
+      plans.forEach((p, idx) => {
+        const li = document.createElement("li");
+        const btn = document.createElement("button");
+        btn.type = "button";
+        const n = document.createElement("span");
+        n.className = "plan-idx";
+        n.textContent = `${idx + 1}.`;
+        btn.appendChild(n);
+        btn.appendChild(document.createTextNode(p.label));
+        btn.dataset.planId = p.id;
+        btn.addEventListener("click", () => selectPlan(p.id, btn));
+        li.appendChild(btn);
+        ol.appendChild(li);
+      });
+    }
+
+    function clearChunksUi() {
+      document.getElementById("chunkList").innerHTML = "";
+      document.getElementById("chunkPlaceholder").style.display = "block";
+      document.getElementById("contentPlaceholder").style.display = "block";
+      document.getElementById("chunkContent").style.display = "none";
+      chunksCache = [];
+      selectedChunkIndex = -1;
+    }
+
+    async function selectPlan(planId, btnEl) {
+      selectedPlanId = planId;
+      document.querySelectorAll(".plan-list button").forEach((b) => b.classList.remove("active"));
+      if (btnEl) btnEl.classList.add("active");
+
+      clearChunksUi();
+      document.getElementById("chunkPlaceholder").textContent = "Loading…";
+      document.getElementById("chunkPlaceholder").style.display = "block";
+
+      showErr("");
+      const res = await fetch("/api/library/chunks?planId=" + encodeURIComponent(planId));
+      if (!res.ok) {
+        const t = await res.text();
+        showErr("Could not load sections (" + res.status + "). " + t);
+        document.getElementById("chunkPlaceholder").textContent = "Select a tech plan.";
+        return;
+      }
+      chunksCache = await res.json();
+      document.getElementById("chunkPlaceholder").style.display = "none";
+
+      const ul = document.getElementById("chunkList");
+      ul.innerHTML = "";
+      chunksCache.forEach((c, i) => {
+        const li = document.createElement("li");
+        const btn = document.createElement("button");
+        btn.type = "button";
+        const titleSpan = document.createElement("span");
+        titleSpan.textContent = c.title;
+        btn.appendChild(titleSpan);
+        const pathSpan = document.createElement("span");
+        pathSpan.className = "chunk-path";
+        pathSpan.textContent = c.path;
+        btn.appendChild(pathSpan);
+        btn.addEventListener("click", () => selectChunk(i, btn));
+        li.appendChild(btn);
+        ul.appendChild(li);
+      });
+    }
+
+    function selectChunk(index, btnEl) {
+      selectedChunkIndex = index;
+      document.querySelectorAll(".chunk-list button").forEach((b) => b.classList.remove("active"));
+      if (btnEl) btnEl.classList.add("active");
+
+      const c = chunksCache[index];
+      if (!c) return;
+      document.getElementById("contentPlaceholder").style.display = "none";
+      const pre = document.getElementById("chunkContent");
+      pre.style.display = "block";
+      pre.textContent = c.content;
+    }
+
+    loadPlans().catch((e) => showErr(e.message || String(e)));
+  </script>
+</body>
+</html>

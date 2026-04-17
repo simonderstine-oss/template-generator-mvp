@@ -1,10 +1,13 @@
+require("dotenv").config();
+
 const http = require("node:http");
 const fs = require("node:fs/promises");
 const path = require("node:path");
 const { getFilesForSelection } = require("./server/lib/templateSelector");
 const { loadTemplateChunks, renderPlanText } = require("./server/lib/templateLoader");
+const { listLibraryPlans, parseLibraryPlanId } = require("./server/lib/libraryCatalog");
 const { buildSystemPrompt, buildUserPrompt, PROMPT_VERSION } = require("./server/llm/promptBuilder");
-const { generateWithGemini } = require("./server/llm/geminiClient");
+const { generatePlanJson } = require("./server/llm/generatePlanJson");
 const { validatePlanSchema } = require("./server/validation/planSchema");
 const { validateAgainstCanonicalRules } = require("./server/validation/planValidation");
 const { API_VARIANTS, DEFAULT_API_VARIANT, EVENT_COUNTS, EVENT_TYPES, INTEGRATION_TYPES } = require("./server/config/canonicalRules");
@@ -123,7 +126,7 @@ async function handlePlanGenerate(req, res) {
       chunks: canonicalChunks
     });
 
-    const firstRaw = await generateWithGemini({ systemPrompt, userPrompt });
+    const firstRaw = await generatePlanJson({ systemPrompt, userPrompt });
     let parsed = JSON.parse(firstRaw);
     let schema = validatePlanSchema(parsed);
     let rules = validateAgainstCanonicalRules(parsed, canonicalChunks);
@@ -137,7 +140,7 @@ async function handlePlanGenerate(req, res) {
         expectedSectionIds: canonicalChunks.map((chunk) => chunk.sectionId),
         invalidPlan: parsed
       });
-      const repairedRaw = await generateWithGemini({
+      const repairedRaw = await generatePlanJson({
         systemPrompt: buildSystemPrompt(),
         userPrompt: repairPrompt
       });
@@ -177,7 +180,54 @@ async function handlePlanGenerate(req, res) {
       planText: renderPlanFromStructuredSections(parsed.sections)
     });
   } catch (error) {
-    writeJson(res, 500, { error: error.message || "Internal error" });
+    const status = Number(error.httpStatus) === 429 ? 429 : 500;
+    const payload = { error: error.message || "Internal error" };
+    if (error.quotaHint) payload.quotaHint = error.quotaHint;
+    writeJson(res, status, payload);
+  }
+}
+
+async function handleLibraryPlans(req, res) {
+  if (!authAndRateLimit(req, res)) return;
+  const payload = listLibraryPlans().map(({ id, label, selection }) => ({
+    id,
+    label,
+    integrationType: selection.integrationType,
+    eventType: selection.eventType,
+    eventCount: selection.eventCount,
+    apiPlanVariant: selection.apiPlanVariant
+  }));
+  writeJson(res, 200, payload);
+}
+
+async function handleLibraryChunks(req, res) {
+  if (!authAndRateLimit(req, res)) return;
+  const u = new URL(req.url, "http://127.0.0.1");
+  const planId = u.searchParams.get("planId");
+  if (!planId) {
+    writeJson(res, 400, { error: "Missing planId query parameter" });
+    return;
+  }
+  const selection = parseLibraryPlanId(planId);
+  if (!selection) {
+    writeJson(res, 404, { error: "Unknown planId" });
+    return;
+  }
+  try {
+    const files = getFilesForSelection(selection);
+    const chunks = await loadTemplateChunks(REPO_ROOT, files);
+    writeJson(
+      res,
+      200,
+      chunks.map((c) => ({
+        sectionId: c.sectionId,
+        title: c.title,
+        path: c.path,
+        content: c.content
+      }))
+    );
+  } catch (error) {
+    writeJson(res, 500, { error: error.message || "Failed to load chunks" });
   }
 }
 
@@ -206,7 +256,28 @@ const server = http.createServer(async (req, res) => {
     await handlePlanGenerate(req, res);
     return;
   }
+  const routeUrl = new URL(req.url, "http://127.0.0.1");
+  const pathname = routeUrl.pathname;
+  if (req.method === "GET" && pathname === "/api/library/plans") {
+    await handleLibraryPlans(req, res);
+    return;
+  }
+  if (req.method === "GET" && pathname === "/api/library/chunks") {
+    await handleLibraryChunks(req, res);
+    return;
+  }
   await serveStatic(req, res);
+});
+
+server.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.error(
+      `Port ${PORT} is already in use. Stop the other process (for example an old terminal still running "npm start") or set PORT to a free port in .env. To see what is using this port on macOS: lsof -nP -iTCP:${PORT} -sTCP:LISTEN`
+    );
+  } else {
+    console.error("Server listen error:", err.message);
+  }
+  process.exit(1);
 });
 
 server.listen(PORT, () => {
